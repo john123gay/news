@@ -1,23 +1,27 @@
-// Require/import the HTTP module
+// Dependencies
 var http = require("http");
+var fs = require("fs");
 
-// Define a port to listen for incoming requests
+// Set our port to 8080
 var PORT = 8080;
 
-// Create a generic function to handle requests and responses
-function handleRequest(request, response) {
-
-  // Send the below string to the client when the user visits the PORT URL
-  response.end("It Works!! Path Hit: " + request.url);
-}
-
-// Use the Node HTTP package to create our server.
-// Pass the handleRequest function to empower it with functionality.
+// Create our server
 var server = http.createServer(handleRequest);
 
-// Start our server so that it can begin listening to client requests.
-server.listen(PORT, function() {
+// Create a function for handling the requests and responses coming into our server
+function handleRequest(req, res) {
 
-  // Log (server-side) when our server has started
-  console.log("Server listening on: http://localhost:" + PORT);
+  // Here we use the fs package to read our index.html file
+  fs.readFile(__dirname + "/index.html", function(err, data) {
+
+    // We then respond to the client with the HTML page by specifically telling the browser that we are delivering
+    // an html file.
+    res.writeHead(200, { "Content-Type": "text/html" });
+    res.end(data);
+  });
+}
+
+// Starts our server
+server.listen(PORT, function() {
+  console.log("Server is listening on PORT: " + PORT);
 });
